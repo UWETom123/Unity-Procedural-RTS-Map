@@ -1,0 +1,24 @@
+fileFormatVersion: 2
+guid: ea116c607ec1c004db446e08d669bcc6
+timeCreated: 1482512012
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Latin Modern Sans Quotation
+  fontNames:
+  - Latin Modern Sans Quotation
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 091bf4fa1b8879a44a297a2705469424, type: 3}
+  - {fileID: 12800000, guid: 034bb61b2f59b114fa31e4c3b0a44fc3, type: 3}
+  - {fileID: 12800000, guid: 16dc65fd178f3f64b847b7bd207ac899, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

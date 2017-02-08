@@ -1,0 +1,29 @@
+fileFormatVersion: 2
+guid: c8689dfea993a114abfbc67cc50066d1
+timeCreated: 1482512012
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Latin Modern Sans
+  fontNames:
+  - Latin Modern Sans
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 79d8c5358a6e39f41bb5f95e24bf446b, type: 3}
+  - {fileID: 12800000, guid: 49be983542261ac4b9c0548cc6ef6851, type: 3}
+  - {fileID: 12800000, guid: 46e4bfa500af9a441a394f05f53525f0, type: 3}
+  - {fileID: 12800000, guid: 7ad19f96c46401e428f6ff3c868d79bd, type: 3}
+  - {fileID: 12800000, guid: 18b3f2d65120c28438b6d782a12b002d, type: 3}
+  - {fileID: 12800000, guid: 1c79800c707efc54db2b85e502557080, type: 3}
+  - {fileID: 12800000, guid: 488b542e0bf5c6b43b4a6dce90ecdfb1, type: 3}
+  - {fileID: 12800000, guid: 3e0a05cfcc7bf3b4b99ec8e7634d65b2, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

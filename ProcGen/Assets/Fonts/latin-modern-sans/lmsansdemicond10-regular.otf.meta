@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 244d1b8cc68b4b0429aba1fd7ea92bd8
+timeCreated: 1482512012
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Latin Modern Sans Demi Cond
+  fontNames:
+  - Latin Modern Sans Demi Cond
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
