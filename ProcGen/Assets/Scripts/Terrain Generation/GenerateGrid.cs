@@ -11,6 +11,7 @@ public class GenerateGrid : MonoBehaviour {
     public static int spreadAmount;
     public static int podID;
     public GameObject startingBuilding;
+    public GameObject house;
     public GameObject worker;
     public Camera mainCamera;
 
@@ -96,6 +97,90 @@ public class GenerateGrid : MonoBehaviour {
             }
         }
         gridGenerated = true;
+    }
+
+    public void GenerateHouseLocations(int numberOfHousesToSpawn)
+    {
+        int gridX;
+        int gridY;
+
+        bool checkAreaFailed = false;
+
+        bool houseGenerated = false;
+
+        int counter = 0;
+        int counter2 = 0;
+
+        int currentGeneratedHouses = 0;
+
+        while (currentGeneratedHouses != numberOfHousesToSpawn)
+        {
+            counter2++;
+            if(counter2 == 1000)
+            {
+                Debug.Log("Failed to spawn the correct amount of houses");
+                break;
+            }
+            houseGenerated = false;
+            while (houseGenerated == false)
+            {
+                checkAreaFailed = false;
+
+                counter++;
+
+                if (counter == 1000)
+                {
+                    Debug.Log("House Generation failed");
+                    break;
+                }
+
+                gridX = Random.Range(0, mapGrid.GetLength(0));
+                gridY = Random.Range(0, mapGrid.GetLength(1));
+
+                while (mapGrid[gridX, gridY].myCell != GridCell.CellType.Grass)
+                {
+                    gridX = Random.Range(0, mapGrid.GetLength(0));
+                    gridY = Random.Range(0, mapGrid.GetLength(1));
+                }
+
+                for (int y = gridY - 8; y != gridY + 8; y++)
+                {
+                    for (int x = gridX - 8; x != gridX + 8; x++)
+                    {
+                        if (mapGrid[x, y].myCell == GridCell.CellType.Grass)
+                        {
+                            //Gucci Mane
+                        }
+                        else
+                        {
+                            checkAreaFailed = true;
+                            break;
+                        }
+                    }
+                    if (checkAreaFailed == true)
+                    {
+                        break;
+                    }
+                }
+
+                if (checkAreaFailed == false)
+                {
+                    houseGenerated = true;
+
+                    for (int y = gridY - 8; y != gridY + 8; y++)
+                    {
+                        for (int x = gridX - 8; x != gridX + 8; x++)
+                        {
+                            mapGrid[x, y].myCell = GridCell.CellType.HouseArea;
+
+                        }
+                    }
+                    Instantiate((Object)house, mapGrid[gridX, gridY].position, Quaternion.LookRotation(Vector3.up, Vector3.forward));
+                    currentGeneratedHouses++;
+                }
+
+            }
+        }
     }
 
     public void ChooseStartingLocation()
@@ -524,6 +609,9 @@ public class GenerateGrid : MonoBehaviour {
                     break;
 
                 case GridCell.CellType.StartingCell:
+                    Debug.DrawLine(cell.position, drawResourceTarget, Color.grey, 100000);
+                    break;
+                case GridCell.CellType.HouseArea:
                     Debug.DrawLine(cell.position, drawResourceTarget, Color.grey, 100000);
                     break;
                 case GridCell.CellType.Water:

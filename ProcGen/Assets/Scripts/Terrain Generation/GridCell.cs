@@ -36,6 +36,7 @@ public class GridCell {
       Berry,
       Gem,
       Rock,
+      HouseArea
     };
     public CellType myCell;
 

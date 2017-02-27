@@ -8,8 +8,8 @@ public class UI : MonoBehaviour {
     public InputField userSeed;
     public Dropdown userSeason;
     public Scrollbar userResource;
-    public Toggle userIsland;
     public Dropdown userStartingWorkers;
+    public Dropdown userHouses;
     public GameObject inventoryCanvas;
 
     public TerrainData terrainData;
@@ -36,6 +36,7 @@ public class UI : MonoBehaviour {
     public bool falloff;
 
     public int startingWorkers;
+    public int houseAmount;
 
     public enum seasons
     {
@@ -61,11 +62,11 @@ public class UI : MonoBehaviour {
         }
         mySeason = (seasons)userSeason.value;
         resourceDistributionMultiplier = userResource.value;
-        falloff = userIsland.isOn;
         int.TryParse(userStartingWorkers.captionText.text, out startingWorkers);
+        int.TryParse(userHouses.captionText.text, out houseAmount);
 
         noiseData.seed = seed;
-        terrainData.useFalloff = falloff;
+        terrainData.useFalloff = true;
 
         switch (mySeason)
         {
@@ -135,8 +136,10 @@ public class UI : MonoBehaviour {
             generateGrid.GetRandomSelection(1, 1, true);
         }
         generateGrid.ChooseStartingLocation();
+        generateGrid.GenerateHouseLocations(houseAmount);
         instantiateModels.InstantiateResources(GenerateGrid.mapGrid);
         generateGrid.spawnStartingWorkers(startingWorkers);
+        
         //generateGrid.DrawGridLines();
         
         
