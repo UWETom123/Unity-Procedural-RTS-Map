@@ -137,10 +137,11 @@ public class UI : MonoBehaviour {
         }
         generateGrid.ChooseStartingLocation();
         generateGrid.GenerateHouseLocations(houseAmount);
+        generateGrid.GenerateVillagers(4);
         instantiateModels.InstantiateResources(GenerateGrid.mapGrid);
         generateGrid.spawnStartingWorkers(startingWorkers);
         
-        //generateGrid.DrawGridLines();
+        generateGrid.DrawGridLines();
         
         
     }

@@ -19,6 +19,7 @@ public class GridCell {
     public Vector3 lineTarget;
     public bool occupiedCell = false;
     public int resourcePodID;
+    public int houseID;
     public float distanceToCharacter;
 
     public enum CellType
@@ -36,7 +37,8 @@ public class GridCell {
       Berry,
       Gem,
       Rock,
-      HouseArea
+      HouseArea,
+      VillagerSpawnLocation
     };
     public CellType myCell;
 
