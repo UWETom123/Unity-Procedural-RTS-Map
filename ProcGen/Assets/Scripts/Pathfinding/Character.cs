@@ -23,6 +23,16 @@ public class Character : MonoBehaviour {
         Depositing,
     }
 
+    public enum DesiredResource
+    {
+        Wood,
+        Berries,
+        Rocks,
+        Gems
+    }
+
+    public DesiredResource myDesiredResource;
+
     public CharacterState myState = CharacterState.Walking;
 
     public GameObject myObject;
@@ -32,6 +42,8 @@ public class Character : MonoBehaviour {
     public List<GridCell> pathToResource;
 
     public List<GridCell> pathToHome;
+
+    public GameObject myHouse;
 
     public int houseID;
 
@@ -65,7 +77,7 @@ public class Character : MonoBehaviour {
 
     void Update()
     {
-        if (myType != CharacterType.Villager)
+        if (myType != CharacterType.GemMiner)
         {
             delay = 3.0f;
             if (pathFound == true)
@@ -112,30 +124,53 @@ public class Character : MonoBehaviour {
                             i++;
                             myCell = currentPath[i];
                             timer = 0.0f;
-                            switch (myType)
+                            if (myType == CharacterType.Villager)
                             {
-                                case CharacterType.Lumberjack:
-                                    UserResources.woodAmount += 10;
-                                    break;
-                                case CharacterType.Gatherer:
-                                    UserResources.berriesAmount += 10;
-                                    break;
-                                case CharacterType.Miner:
-                                    UserResources.rocksAmount += 10;
-                                    break;
-                            }
+                                switch (myDesiredResource)
+                                {
+                                    case DesiredResource.Berries:
+                                        UserResources.berriesAmount -= 5;
+                                        myHouse.GetComponent<HouseInventory>().berriesAmount += 5;
+                                        break;
+                                    case DesiredResource.Wood:
+                                        UserResources.woodAmount -= 5;
+                                        myHouse.GetComponent<HouseInventory>().woodAmount += 5;
+                                        break;
+                                    case DesiredResource.Rocks:
+                                        UserResources.rocksAmount -= 5;
+                                        myHouse.GetComponent<HouseInventory>().rocksAmount += 5;
+                                        break;
+                                    case DesiredResource.Gems:
+                                        UserResources.gemsAmount -= 5;
+                                        myHouse.GetComponent<HouseInventory>().gemsAmount += 5;
+                                        break;
 
+                                }
+                            }
+                            else
+                            {
+                                switch (myType)
+                                {
+                                    case CharacterType.Lumberjack:
+                                        UserResources.woodAmount += 15;
+                                        break;
+                                    case CharacterType.Gatherer:
+                                        UserResources.berriesAmount += 15;
+                                        break;
+                                    case CharacterType.Miner:
+                                        UserResources.rocksAmount += 15;
+                                        break;
+                                }
+                            }                            
                         }
 
                         transform.position = Vector3.MoveTowards(transform.position, currentPath[i + 1].position, 5.0f * Time.deltaTime);
-
 
                     }
                 }
 
                 if (myState == CharacterState.Walking)
                 {
-
                     if (myCell == pathToResource[pathToResource.Count - 1])
                     {
                         myState = CharacterState.Gathering;
@@ -156,5 +191,7 @@ public class Character : MonoBehaviour {
                 }
             }
         }
+
+
     }
 }

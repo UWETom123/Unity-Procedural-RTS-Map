@@ -11,10 +11,13 @@ public class UserResources : MonoBehaviour {
     public Text rocksDisplay;
     public Text populationDisplay;
 
-    static public int woodAmount;
-    static public int berriesAmount;
-    static public int gemsAmount;
-    static public int rocksAmount;
+    public bool addedLadders = false;
+    public bool addedBoats = true;
+
+    static public int woodAmount = 200;
+    static public int berriesAmount = 200;
+    static public int gemsAmount = 200;
+    static public int rocksAmount = 200;
     static public int populationAmount;
 
 
@@ -28,6 +31,16 @@ public class UserResources : MonoBehaviour {
         woodDisplay.text = woodAmount.ToString();
         berriesDisplay.text = berriesAmount.ToString();
         rocksDisplay.text = rocksAmount.ToString();
+        gemsDisplay.text = gemsAmount.ToString();
         populationDisplay.text = populationAmount.ToString();
+    }
+
+    public void activateLadders()
+    {
+        addedLadders = true;
+    }
+    public void activateBoats()
+    {
+        addedBoats = true;
     }
 }

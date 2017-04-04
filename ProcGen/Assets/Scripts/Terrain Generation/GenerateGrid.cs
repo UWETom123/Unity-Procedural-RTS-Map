@@ -10,17 +10,20 @@ public class GenerateGrid : MonoBehaviour {
     public static int currentlyGeneratedCells;
     public static int spreadAmount;
     public static int podID;
+    public int currentGeneratedHouses;
     public GameObject startingBuilding;
     public GameObject house;
     public GameObject worker;
     public GameObject villager;
     public Camera mainCamera;
+    public UserResources userResources;
 
     public List<GameObject> lumberjacks;
     public List<GameObject> gatherers;
     public List<GameObject> miners;
     public List<GameObject> gemminers;
     public List<GameObject> villagers;
+    public List<GameObject> houses;
 
     Vector3 lineTarget;
     float newY;
@@ -113,7 +116,6 @@ public class GenerateGrid : MonoBehaviour {
         int houseID;
         foreach (GridCell cell in mapGrid)
         {
-            
             currentSpawnedVillagers = 0;
             if (cell.myCell == GridCell.CellType.VillagerSpawnLocation)
             {
@@ -140,6 +142,8 @@ public class GenerateGrid : MonoBehaviour {
 
                     villagers.Add(Instantiate(villager, mapGrid[gridX, gridY].position, Quaternion.identity));
                     villagers[i].GetComponent<Character>().houseID = houseID;
+                    villagers[i].GetComponent<Character>().myHouse = houses[houseID];
+                    villagers[i].GetComponent<Character>().myCell = mapGrid[gridX,gridY];
                     i++;
 
                     currentSpawnedVillagers++;
@@ -147,6 +151,29 @@ public class GenerateGrid : MonoBehaviour {
                 }
             }
         }
+        foreach (GameObject villager in villagers)
+        {
+            villager.GetComponent<Character>().pathToResource = pathfinder.FindPath(GridCell.CellType.StartingCell, villager.GetComponent<Character>().myCell, true);
+            villager.GetComponent<Character>().pathToHome = pathfinder.FindPath(GridCell.CellType.StartingCell, villager.GetComponent<Character>().myCell, false);
+            villager.GetComponent<Character>().pathFound = true;
+            villager.GetComponent<Character>().myType = Character.CharacterType.Villager;
+        }
+
+        int currentResourceOfChoice = 0;
+
+        for (int x = 0; x != currentGeneratedHouses; x++)
+        {
+            currentResourceOfChoice = 0;
+            foreach (GameObject villager in villagers)
+            {
+                if (villager.GetComponent<Character>().houseID == x)
+                {
+                    villager.GetComponent<Character>().myDesiredResource = (Character.DesiredResource)currentResourceOfChoice;
+                    currentResourceOfChoice++;
+                }
+
+            }
+        }      
     }
 
     public void GenerateHouseLocations(int numberOfHousesToSpawn)
@@ -162,7 +189,7 @@ public class GenerateGrid : MonoBehaviour {
         int counter2 = 0;
         int houseID = 0;
 
-        int currentGeneratedHouses = 0;
+        currentGeneratedHouses = 0;
 
         while (currentGeneratedHouses != numberOfHousesToSpawn)
         {
@@ -237,7 +264,9 @@ public class GenerateGrid : MonoBehaviour {
                             }                           
                         }
                     }
-                    Instantiate((Object)house, mapGrid[gridX, gridY].position, Quaternion.LookRotation(Vector3.up, Vector3.forward));
+                    houses.Add(Instantiate(house, mapGrid[gridX, gridY].position, Quaternion.LookRotation(Vector3.up, Vector3.forward)));
+                    houses[houses.Count -1].GetComponent<HouseInventory>().houseID = houseID;
+                    houses[houses.Count - 1].GetComponent<HouseInventory>().populationAmount = 4;
                     houseID++;
                     currentGeneratedHouses++;
                     villagerAreaGenerated = false; 
@@ -475,10 +504,10 @@ public class GenerateGrid : MonoBehaviour {
                 gridY = Random.Range(0, mapGrid.GetLength(1));
             }
 
-            gemminers.Add(Instantiate(worker, mapGrid[gridX, gridY].position, Quaternion.identity));
-            mapGrid[gridX, gridY].occupiedCell = true;
-            UserResources.populationAmount++;
-            gemminers[miners.Count - 1].GetComponent<Character>().myCell = mapGrid[gridX, gridY];
+            //gemminers.Add(Instantiate(worker, mapGrid[gridX, gridY].position, Quaternion.identity));
+            //mapGrid[gridX, gridY].occupiedCell = true;
+            //UserResources.populationAmount++;
+            //gemminers[miners.Count - 1].GetComponent<Character>().myCell = mapGrid[gridX, gridY];
 
         }
         //while (InstantiateModels.resourcesInstantiated == false)
@@ -510,9 +539,9 @@ public class GenerateGrid : MonoBehaviour {
         }
         foreach (GameObject character in gemminers)
         {
-            //character.GetComponent<Character>().pathToResource = pathfinder.FindPath(GridCell.CellType.Rock, character.GetComponent<Character>().myCell, true);
-            //character.GetComponent<Character>().pathToHome = pathfinder.FindPath(GridCell.CellType.Rock, character.GetComponent<Character>().myCell, false);
-            //character.GetComponent<Character>().pathFound = true;
+            character.GetComponent<Character>().pathToResource = pathfinder.FindPath(GridCell.CellType.RareZone, character.GetComponent<Character>().myCell, true, userResources, true);
+            character.GetComponent<Character>().pathToHome = pathfinder.FindPath(GridCell.CellType.RareZone, character.GetComponent<Character>().myCell, false, userResources, true);
+            character.GetComponent<Character>().pathFound = true;
             character.GetComponent<Character>().myType = Character.CharacterType.GemMiner;
         }
     }

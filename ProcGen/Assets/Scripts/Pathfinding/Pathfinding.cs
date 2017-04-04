@@ -39,7 +39,7 @@ public class Pathfinding : MonoBehaviour {
         return closestCell;
     }
 
-    public List<GridCell> FindPath (GridCell.CellType cellType, GridCell workerCell, bool reverseList)
+    public List<GridCell> FindPath (GridCell.CellType cellType, GridCell workerCell, bool reverseList, UserResources userResources = null, bool gemMiner = false)
     {
         GridCell startingCell = workerCell;
         GridCell targetCell = FindClosestCell(cellType, workerCell);
@@ -69,11 +69,42 @@ public class Pathfinding : MonoBehaviour {
 
             foreach (GridCell neighbour in generateGrid.GetNeighbours(currentCell))
             {
-                if (neighbour.myCell == GridCell.CellType.RareZone || neighbour.myCell == GridCell.CellType.ElevatedLand || neighbour.myCell == GridCell.CellType.Water || closedSet.Contains(neighbour))
+                if (gemMiner == true)
                 {
-                    continue;
+                    if (userResources.addedLadders == true && userResources.addedBoats == false)
+                    {
+                        if (neighbour.myCell == GridCell.CellType.Water || closedSet.Contains(neighbour))
+                        {
+                            continue;
+                        }
+                    }
+                    else if (userResources.addedBoats == true && userResources.addedLadders == false)
+                    {
+                        if (neighbour.myCell == GridCell.CellType.ElevatedLand || closedSet.Contains(neighbour))
+                        {
+                            continue;
+                        }
+                    }
+                    else if (userResources.addedBoats == true && userResources.addedLadders == true)
+                    {
+                        if (closedSet.Contains(neighbour))
+                        {
+                            continue;
+                        }
+                    }
+                    else if (userResources.addedBoats == false && userResources.addedLadders == false)
+                    {
+                        continue;
+                    }
                 }
-
+                else
+                {
+                    if (neighbour.myCell == GridCell.CellType.RareZone || neighbour.myCell == GridCell.CellType.ElevatedLand || neighbour.myCell == GridCell.CellType.Water || closedSet.Contains(neighbour))
+                    {
+                        continue;
+                    }
+                }
+                
                 int newMovementCostToNeighbour = currentCell.gCost + GetDistance(currentCell, neighbour);
                 if (newMovementCostToNeighbour < neighbour.gCost || !openSet.Contains(neighbour))
                 {

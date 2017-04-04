@@ -141,7 +141,7 @@ public class UI : MonoBehaviour {
         instantiateModels.InstantiateResources(GenerateGrid.mapGrid);
         generateGrid.spawnStartingWorkers(startingWorkers);
         
-        generateGrid.DrawGridLines();
+        //generateGrid.DrawGridLines();
         
         
     }
