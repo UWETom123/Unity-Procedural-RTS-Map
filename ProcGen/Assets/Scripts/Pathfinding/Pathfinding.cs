@@ -39,7 +39,7 @@ public class Pathfinding : MonoBehaviour {
         return closestCell;
     }
 
-    public List<GridCell> FindPath (GridCell.CellType cellType, GridCell workerCell, bool reverseList, UserResources userResources = null, bool gemMiner = false)
+    public List<GridCell> FindPath (GridCell.CellType cellType, GridCell workerCell, bool reverseList, Character character, UserResources userResources = null, bool gemMiner = false)
     {
         GridCell startingCell = workerCell;
         GridCell targetCell = FindClosestCell(cellType, workerCell);
@@ -64,6 +64,7 @@ public class Pathfinding : MonoBehaviour {
             if (currentCell == targetCell)
             {
                 pathFound = true;
+                character.pathFound = true;
                 return RetracePath(startingCell, targetCell, reverseList);              
             }
 
@@ -80,7 +81,7 @@ public class Pathfinding : MonoBehaviour {
                     }
                     else if (userResources.addedBoats == true && userResources.addedLadders == false)
                     {
-                        if (neighbour.myCell == GridCell.CellType.ElevatedLand || closedSet.Contains(neighbour))
+                        if (closedSet.Contains(neighbour))
                         {
                             continue;
                         }

@@ -12,7 +12,11 @@ public class GridCell {
     public int gCost;
     public int hCost;
 
+    public int resourceAmount;
+
     public GridCell parent;
+
+    public GameObject cellObject;
     
     public Vector3 position;
     public float newY;
@@ -50,6 +54,7 @@ public class GridCell {
         resourcePodID = resourceID;
         gridX = _gridX;
         gridY = _gridY;
+        resourceAmount = 30;
     }
 
     public int fCost

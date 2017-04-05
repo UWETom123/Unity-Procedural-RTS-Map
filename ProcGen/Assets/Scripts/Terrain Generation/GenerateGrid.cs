@@ -95,7 +95,7 @@ public class GenerateGrid : MonoBehaviour {
             }
             else if (hit.collider.tag.Equals ("Island") && cell.position.y < 10)
             {
-                cell.myCell = GridCell.CellType.ElevatedLand;
+                cell.myCell = GridCell.CellType.Grass;
             }
             else
             {
@@ -141,6 +141,7 @@ public class GenerateGrid : MonoBehaviour {
                     } while (mapGrid[gridX, gridY].myCell != GridCell.CellType.Grass);
 
                     villagers.Add(Instantiate(villager, mapGrid[gridX, gridY].position, Quaternion.identity));
+                    UserResources.populationAmount++;
                     villagers[i].GetComponent<Character>().houseID = houseID;
                     villagers[i].GetComponent<Character>().myHouse = houses[houseID];
                     villagers[i].GetComponent<Character>().myCell = mapGrid[gridX,gridY];
@@ -153,8 +154,8 @@ public class GenerateGrid : MonoBehaviour {
         }
         foreach (GameObject villager in villagers)
         {
-            villager.GetComponent<Character>().pathToResource = pathfinder.FindPath(GridCell.CellType.StartingCell, villager.GetComponent<Character>().myCell, true);
-            villager.GetComponent<Character>().pathToHome = pathfinder.FindPath(GridCell.CellType.StartingCell, villager.GetComponent<Character>().myCell, false);
+            villager.GetComponent<Character>().pathToResource = pathfinder.FindPath(GridCell.CellType.StartingCell, villager.GetComponent<Character>().myCell, true, villager.GetComponent<Character>());
+            villager.GetComponent<Character>().pathToHome = pathfinder.FindPath(GridCell.CellType.StartingCell, villager.GetComponent<Character>().myCell, false, villager.GetComponent<Character>());
             villager.GetComponent<Character>().pathFound = true;
             villager.GetComponent<Character>().myType = Character.CharacterType.Villager;
         }
@@ -331,9 +332,9 @@ public class GenerateGrid : MonoBehaviour {
             {
                 startingAreaGenerated = true;
 
-                for (int y = gridY - 12; y != gridY + 12; y++)
+                for (int y = gridY - 12; y != gridY + 24; y++)
                 {
-                    for (int x = gridX - 12; x != gridX + 12; x++)
+                    for (int x = gridX - 12; x != gridX + 24; x++)
                     {
                         mapGrid[x, y].myCell = GridCell.CellType.StartingCell;
                         
@@ -469,6 +470,7 @@ public class GenerateGrid : MonoBehaviour {
             mapGrid[gridX, gridY].occupiedCell = true;
             UserResources.populationAmount++;
             lumberjacks[lumberjacks.Count -1].GetComponent<Character>().myCell = mapGrid[gridX, gridY];
+            lumberjacks[lumberjacks.Count - 1].GetComponent<Character>().myDesiredCellType = GridCell.CellType.Wood;
 
             gridX = Random.Range(0, mapGrid.GetLength(0));
             gridY = Random.Range(0, mapGrid.GetLength(1));
@@ -483,6 +485,7 @@ public class GenerateGrid : MonoBehaviour {
             mapGrid[gridX, gridY].occupiedCell = true;
             UserResources.populationAmount++;
             gatherers[gatherers.Count - 1].GetComponent<Character>().myCell = mapGrid[gridX, gridY];
+            gatherers[gatherers.Count - 1].GetComponent<Character>().myDesiredCellType = GridCell.CellType.Berry;
 
             gridX = Random.Range(0, mapGrid.GetLength(0));
             gridY = Random.Range(0, mapGrid.GetLength(1));
@@ -497,6 +500,7 @@ public class GenerateGrid : MonoBehaviour {
             mapGrid[gridX, gridY].occupiedCell = true;
             UserResources.populationAmount++;
             miners[miners.Count - 1].GetComponent<Character>().myCell = mapGrid[gridX, gridY];
+            miners[miners.Count - 1].GetComponent<Character>().myDesiredCellType = GridCell.CellType.Rock;
 
             while (mapGrid[gridX, gridY].myCell != GridCell.CellType.StartingCell || mapGrid[gridX, gridY].occupiedCell == true)
             {
@@ -504,11 +508,11 @@ public class GenerateGrid : MonoBehaviour {
                 gridY = Random.Range(0, mapGrid.GetLength(1));
             }
 
-            //gemminers.Add(Instantiate(worker, mapGrid[gridX, gridY].position, Quaternion.identity));
-            //mapGrid[gridX, gridY].occupiedCell = true;
-            //UserResources.populationAmount++;
-            //gemminers[miners.Count - 1].GetComponent<Character>().myCell = mapGrid[gridX, gridY];
-
+            gemminers.Add(Instantiate(worker, mapGrid[gridX, gridY].position, Quaternion.identity));
+            mapGrid[gridX, gridY].occupiedCell = true;
+            UserResources.populationAmount++;
+            gemminers[miners.Count - 1].GetComponent<Character>().myCell = mapGrid[gridX, gridY];
+            gemminers[miners.Count - 1].GetComponent<Character>().myDesiredCellType = GridCell.CellType.Gem;
         }
         //while (InstantiateModels.resourcesInstantiated == false)
         //{
@@ -516,32 +520,36 @@ public class GenerateGrid : MonoBehaviour {
         //}
         foreach (GameObject character in lumberjacks)
         {
-            character.GetComponent<Character>().pathToResource = pathfinder.FindPath(GridCell.CellType.Wood, character.GetComponent<Character>().myCell, true);
-            character.GetComponent<Character>().pathToHome = pathfinder.FindPath(GridCell.CellType.Wood, character.GetComponent<Character>().myCell, false);
+            character.GetComponent<Character>().pathToResource = pathfinder.FindPath(GridCell.CellType.Wood, character.GetComponent<Character>().myCell, true, character.GetComponent<Character>());
+            character.GetComponent<Character>().pathToHome = pathfinder.FindPath(GridCell.CellType.Wood, character.GetComponent<Character>().myCell, false, character.GetComponent<Character>());
+            character.GetComponent<Character>().startingCell = character.GetComponent<Character>().myCell;
             character.GetComponent<Character>().pathFound = true;
             character.GetComponent<Character>().myType = Character.CharacterType.Lumberjack;
         }
 
         foreach (GameObject character in gatherers)
         {
-            character.GetComponent<Character>().pathToResource = pathfinder.FindPath(GridCell.CellType.Berry, character.GetComponent<Character>().myCell, true);
-            character.GetComponent<Character>().pathToHome = pathfinder.FindPath(GridCell.CellType.Berry, character.GetComponent<Character>().myCell, false);
+            character.GetComponent<Character>().pathToResource = pathfinder.FindPath(GridCell.CellType.Berry, character.GetComponent<Character>().myCell, true, character.GetComponent<Character>());
+            character.GetComponent<Character>().pathToHome = pathfinder.FindPath(GridCell.CellType.Berry, character.GetComponent<Character>().myCell, false, character.GetComponent<Character>());
+            character.GetComponent<Character>().startingCell = character.GetComponent<Character>().myCell;
             character.GetComponent<Character>().pathFound = true;
             character.GetComponent<Character>().myType = Character.CharacterType.Gatherer;
         }
 
         foreach (GameObject character in miners)
         {
-            character.GetComponent<Character>().pathToResource = pathfinder.FindPath(GridCell.CellType.Rock, character.GetComponent<Character>().myCell, true);
-            character.GetComponent<Character>().pathToHome = pathfinder.FindPath(GridCell.CellType.Rock, character.GetComponent<Character>().myCell, false);
+            character.GetComponent<Character>().pathToResource = pathfinder.FindPath(GridCell.CellType.Rock, character.GetComponent<Character>().myCell, true, character.GetComponent<Character>());
+            character.GetComponent<Character>().pathToHome = pathfinder.FindPath(GridCell.CellType.Rock, character.GetComponent<Character>().myCell, false, character.GetComponent<Character>());
+            character.GetComponent<Character>().startingCell = character.GetComponent<Character>().myCell;
             character.GetComponent<Character>().pathFound = true;
             character.GetComponent<Character>().myType = Character.CharacterType.Miner;
         }
         foreach (GameObject character in gemminers)
         {
-            character.GetComponent<Character>().pathToResource = pathfinder.FindPath(GridCell.CellType.RareZone, character.GetComponent<Character>().myCell, true, userResources, true);
-            character.GetComponent<Character>().pathToHome = pathfinder.FindPath(GridCell.CellType.RareZone, character.GetComponent<Character>().myCell, false, userResources, true);
-            character.GetComponent<Character>().pathFound = true;
+            //character.GetComponent<Character>().pathToResource = pathfinder.FindPath(GridCell.CellType.RareZone, character.GetComponent<Character>().myCell, true, character.GetComponent<Character>(), userResources, true);
+            //character.GetComponent<Character>().pathToHome = pathfinder.FindPath(GridCell.CellType.RareZone, character.GetComponent<Character>().myCell, false, character.GetComponent<Character>(), userResources, true);
+            character.GetComponent<Character>().startingCell = character.GetComponent<Character>().myCell;
+            character.GetComponent<Character>().pathFound = false;
             character.GetComponent<Character>().myType = Character.CharacterType.GemMiner;
         }
     }

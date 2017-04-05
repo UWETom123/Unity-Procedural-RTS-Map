@@ -10,9 +10,13 @@ public class UserResources : MonoBehaviour {
     public Text gemsDisplay;
     public Text rocksDisplay;
     public Text populationDisplay;
+    public Image padlock;
+
+    public Button addLadders;
+    public Button addBoats;
 
     public bool addedLadders = false;
-    public bool addedBoats = true;
+    public bool addedBoats = false;
 
     static public int woodAmount = 200;
     static public int berriesAmount = 200;
@@ -38,9 +42,17 @@ public class UserResources : MonoBehaviour {
     public void activateLadders()
     {
         addedLadders = true;
+        woodAmount -= 100;
+        rocksAmount -= 100;
+        addLadders.interactable = false;
+        addBoats.interactable = true;
+        padlock.gameObject.SetActive(false);
     }
     public void activateBoats()
     {
         addedBoats = true;
+        woodAmount -= 100;
+        rocksAmount -= 100;
+        addBoats.interactable = false;
     }
 }

@@ -31,6 +31,8 @@ public class Character : MonoBehaviour {
         Gems
     }
 
+    public GridCell.CellType myDesiredCellType;
+
     public DesiredResource myDesiredResource;
 
     public CharacterState myState = CharacterState.Walking;
@@ -39,11 +41,16 @@ public class Character : MonoBehaviour {
 
     public GridCell myCell;
 
+    public GridCell startingCell;
+
     public List<GridCell> pathToResource;
 
     public List<GridCell> pathToHome;
 
     public GameObject myHouse;
+
+    public Pathfinding pathfinder;
+    public UserResources userResources;
 
     public int houseID;
 
@@ -57,6 +64,8 @@ public class Character : MonoBehaviour {
 
     public bool pathFound = false;
 
+    bool setup;
+
     List<GridCell> currentPath;
 
     public Character(GameObject characterObject, GridCell characterCell, CharacterType characterType)
@@ -67,19 +76,36 @@ public class Character : MonoBehaviour {
 
         offset = new Vector3(characterCell.position.x, characterCell.position.y + 0.85f, characterCell.position.z);
 
-        Instantiate((Object)characterObject, offset, Quaternion.identity);
+        //Instantiate((Object)characterObject, offset, Quaternion.identity);
     }
 
     void Start()
     {
         currentPath = pathToResource;
+        pathfinder = GameObject.Find("RTSManager").GetComponent<Pathfinding>();
+        userResources = GameObject.Find("RTSManager").GetComponent<UserResources>();
+        setup = false;
     }
 
     void Update()
     {
-        if (myType != CharacterType.GemMiner)
+        if (myType != CharacterType.Citizen)
         {
             delay = 3.0f;
+            if (myType == CharacterType.GemMiner)
+            {
+                if (userResources.addedBoats == true || userResources.addedLadders == true)
+                {
+                    if (setup == false)
+                    {
+                        pathFound = false;
+                        pathToResource = pathfinder.FindPath(myDesiredCellType, startingCell, true, this, userResources, true);
+                        pathToHome = pathfinder.FindPath(myDesiredCellType, startingCell, false, this, userResources, true);
+                        currentPath = pathToResource;
+                        setup = true;
+                    }                                                                    
+                }
+            }
             if (pathFound == true)
             {
                 if (myState == CharacterState.Gathering)
@@ -90,6 +116,51 @@ public class Character : MonoBehaviour {
                     }
                     else if (timer >= delay)
                     {
+                        if (myType != CharacterType.Villager)
+                        {
+                            pathFound = false;
+                            while (pathFound == false)
+                            {
+                                if (myType != CharacterType.GemMiner)
+                                {
+                                    pathToHome = pathfinder.FindPath(myDesiredCellType, startingCell, false, this);
+                                }
+                                else
+                                {
+                                    pathToHome = pathfinder.FindPath(myDesiredCellType, startingCell, false, this, userResources, true);
+                                }
+                                
+                            }
+                            switch (myType)
+                            {
+                                case CharacterType.Lumberjack:
+                                    myCell.resourceAmount -= 15;
+                                    break;
+                                case CharacterType.Gatherer:
+                                    myCell.resourceAmount -= 15;
+                                    break;
+                                case CharacterType.Miner:
+                                    myCell.resourceAmount -= 15;
+                                    break;
+                                case CharacterType.GemMiner:
+                                    myCell.resourceAmount -= 15;
+                                    break;
+                            }
+                            if (myCell.resourceAmount <= 0)
+                            {
+                                Destroy(myCell.cellObject);
+                                if (myCell.myCell == GridCell.CellType.Gem)
+                                {
+                                    myCell.myCell = GridCell.CellType.ElevatedLand;
+                                }
+                                else
+                                {
+                                    myCell.myCell = GridCell.CellType.Grass;
+                                }
+                                
+                            }
+                        }
+                        
                         myState = CharacterState.Walking;
                         currentPath = pathToHome;
                         i = 0;
@@ -114,7 +185,21 @@ public class Character : MonoBehaviour {
                     }
                     else if (timer >= delay)
                     {
-
+                        if (myType != CharacterType.Villager)
+                        {
+                            pathFound = false;
+                            while(pathFound == false)
+                            {
+                                if (myType != CharacterType.GemMiner)
+                                {
+                                    pathToResource = pathfinder.FindPath(myDesiredCellType, startingCell, true, this);
+                                }
+                                else
+                                {
+                                    pathToResource = pathfinder.FindPath(myDesiredCellType, startingCell, true, this, userResources, true);
+                                }
+                            }                         
+                        }                 
                         myState = CharacterState.Walking;
                         currentPath = pathToResource;
                         i = 0;
@@ -160,7 +245,10 @@ public class Character : MonoBehaviour {
                                     case CharacterType.Miner:
                                         UserResources.rocksAmount += 15;
                                         break;
-                                }
+                                    case CharacterType.GemMiner:
+                                        UserResources.gemsAmount += 15;
+                                        break;
+                                }                         
                             }                            
                         }
 

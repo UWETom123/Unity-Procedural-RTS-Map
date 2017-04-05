@@ -52,13 +52,13 @@ public class InstantiateModels : MonoBehaviour {
                 {
                     if (cell.myCell == GridCell.CellType.Resource || cell.myCell == GridCell.CellType.ResourceStartingPoint)
                     {
-                        Instantiate(targetResource, cell.position, Quaternion.identity);
+                        cell.cellObject = Instantiate(targetResource, cell.position, Quaternion.identity);
                         cell.myCell = resourceType;
                     }
                     else if (cell.myCell == GridCell.CellType.RareResource || cell.myCell == GridCell.CellType.RareResourceStartingPoint)
                     {
                         offset = new Vector3(cell.position.x, cell.position.y - 0.6f, cell.position.z);
-                        Instantiate(targetRareResource, offset, Quaternion.identity);
+                        cell.cellObject = Instantiate(targetRareResource, cell.position, Quaternion.identity);
                         cell.myCell = GridCell.CellType.Gem;
                     }
                 }
