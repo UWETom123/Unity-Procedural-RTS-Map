@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//Procedural Texture script that interacts with a surface shader
+
+using UnityEngine;
 using System.Collections;
 using System.Linq;
 [CreateAssetMenu()]
@@ -14,6 +16,7 @@ public class TextureData : UpdatableData {
 
 	public void ApplyToMaterial(Material material)
     {
+        //Applies values to Material's shader
         material.SetInt("layerCount", layers.Length);
         material.SetColorArray("baseColours", layers.Select(x => x.tint).ToArray());
         material.SetFloatArray("baseStartHeights", layers.Select(x => x.startHeight).ToArray());
@@ -28,6 +31,7 @@ public class TextureData : UpdatableData {
 
     public void UpdateMeshHeights(Material material, float minHeight, float maxHeight)
     {
+        //Uses height data to alter textures at different altitudes in the terrain
         savedMinHeight = minHeight;
         savedMaxHeight = maxHeight;
 
@@ -37,6 +41,7 @@ public class TextureData : UpdatableData {
 
     Texture2DArray GenerateTextureArray(Texture2D[] textures)
     {
+        //Generates a Texture2D array to hold all the different textures being created
         Texture2DArray textureArray = new Texture2DArray(textureSize, textureSize, textures.Length, textureFormat, true);
         for (int i = 0; i < textures.Length; i++)
         {
@@ -46,7 +51,7 @@ public class TextureData : UpdatableData {
         textureArray.Apply();
         return textureArray;
     }
-
+    //Creates a layer that can be edited within the inspector to allow customisation of the procedural texturing
     [System.Serializable]
     public class Layer
     {

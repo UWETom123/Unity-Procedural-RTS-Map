@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+//The class responsible for feeding information from the menu to the procedural generation
+//The seed generated here is then used for all RNG through the generation stage (Resources, terrain, buildings e.t.c)
 public class UI : MonoBehaviour {
 
     public InputField userSeed;
@@ -102,14 +103,8 @@ public class UI : MonoBehaviour {
 
         mainMesh.transform.rotation = new Quaternion(0, 0, 0 ,0);
 
-        mapGenerator.GenerateMap();
-
-        
-
+        mapGenerator.GenerateMap();       
         generateGrid.Generate();
-
-        
-
         gameObject.SetActive(false);
         inventoryCanvas.GetComponent<Canvas>().enabled = true;
 
@@ -143,8 +138,9 @@ public class UI : MonoBehaviour {
         instantiateModels.InstantiateResources(GenerateGrid.mapGrid, prng);
         generateGrid.spawnStartingWorkers(startingWorkers, prng);
 
-        //generateGrid.DrawGridLines();
+        //Uncomment the code below to see a visual representation of the grid
 
+        //generateGrid.DrawGridLines();
 
     }
 }

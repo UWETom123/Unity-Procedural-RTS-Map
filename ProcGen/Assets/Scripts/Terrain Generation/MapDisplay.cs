@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//Displays the height map and applies it to the 3D mesh
+
+using UnityEngine;
 using System.Collections;
 
 public class MapDisplay : MonoBehaviour {

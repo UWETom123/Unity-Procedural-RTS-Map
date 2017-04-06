@@ -1,9 +1,12 @@
-﻿using System.Collections;
+﻿//The class responsible for generating the grid and adding the workers
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 //Good seeds:
-//99839
-//123
+//99839 DEFAULT RESOURCE GEN
+//123 DEFAULT RESOURCE GEN
+//63774 DEFAULT RESOURCE GEN
 public class GenerateGrid : MonoBehaviour {
 
     public static GridCell[,] mapGrid = new GridCell[300,300]; 

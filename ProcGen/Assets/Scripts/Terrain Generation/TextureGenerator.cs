@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//Obsolete script that was used prior to the surface shader method
+
+using UnityEngine;
 using System.Collections;
 
 public static class TextureGenerator {

@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿//Class responsible for holding information about the player's resources and displaying them on the HUD canvas
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;

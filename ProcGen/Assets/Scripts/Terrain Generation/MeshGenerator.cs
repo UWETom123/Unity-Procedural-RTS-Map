@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//Alters the 3D mesh per vertex to suit the generated height map
+
+using UnityEngine;
 using System.Collections;
 
 public static class MeshGenerator {

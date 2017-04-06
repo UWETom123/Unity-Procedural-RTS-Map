@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//Object uses held data to alter the generated mesh
+
+using UnityEngine;
 using System.Collections;
 
 [CreateAssetMenu()]

@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿//The script responsible for initating the generation of the terrain
+
+using UnityEngine;
 using System.Collections;
 
 public class MapGenerator : MonoBehaviour {
-
+    
     public enum DrawMode {NoiseMap, Mesh, FalloffMap};
     public DrawMode drawMode;
 
@@ -36,6 +38,7 @@ public class MapGenerator : MonoBehaviour {
     
     public void GenerateMap()
     {
+        textureData.ApplyToMaterial(terrainMaterial);
         falloffMap = FalloffGenerator.GenerateFalloffMap(mapChunkSize);
         islandFalloffMap = FalloffGenerator.GenerateIslandFalloffMap(mapChunkSize);
 

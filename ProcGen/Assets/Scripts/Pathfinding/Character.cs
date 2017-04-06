@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+//Character class attached to every AI villager/worker in the scene
 
 public class Character : MonoBehaviour
 {
-
     public enum CharacterType
     {
         Lumberjack,
@@ -67,6 +67,8 @@ public class Character : MonoBehaviour
 
     bool setup;
 
+    bool resourcesUpdated;
+
     List<GridCell> currentPath;
 
     public Character(GameObject characterObject, GridCell characterCell, CharacterType characterType)
@@ -75,7 +77,7 @@ public class Character : MonoBehaviour
         myObject = characterObject;
         myType = characterType;
 
-        offset = new Vector3(characterCell.position.x, characterCell.position.y + 0.85f, characterCell.position.z);
+        //offset = new Vector3(characterCell.position.x, characterCell.position.y + 0.85f, characterCell.position.z);
 
         //Instantiate((Object)characterObject, offset, Quaternion.identity);
     }
@@ -86,8 +88,95 @@ public class Character : MonoBehaviour
         pathfinder = GameObject.Find("RTSManager").GetComponent<Pathfinding>();
         userResources = GameObject.Find("RTSManager").GetComponent<UserResources>();
         setup = false;
+        resourcesUpdated = false;
     }
 
+    //Resources in specific inventories updated depending on the state and type of the character
+    void UpdateResources(CharacterState state, CharacterType type)
+    {
+        if (state == CharacterState.Gathering)
+        {
+            if (type != CharacterType.Villager)
+            {
+                switch (type)
+                {
+                    case CharacterType.Lumberjack:
+                        myCell.resourceAmount -= 15;
+                        break;
+                    case CharacterType.Gatherer:
+                        myCell.resourceAmount -= 15;
+                        break;
+                    case CharacterType.Miner:
+                        myCell.resourceAmount -= 15;
+                        break;
+                    case CharacterType.GemMiner:
+                        myCell.resourceAmount -= 15;
+                        break;
+                }
+            }
+            if (type == CharacterType.Villager)
+            {
+                switch (myDesiredResource)
+                {
+                    case DesiredResource.Berries:
+                        UserResources.berriesAmount -= 5;
+                        break;
+                    case DesiredResource.Wood:
+                        UserResources.woodAmount -= 5;
+                        break;
+                    case DesiredResource.Rocks:
+                        UserResources.rocksAmount -= 5;
+                        break;
+                    case DesiredResource.Gems:
+                        UserResources.gemsAmount -= 5;
+                        break;
+                }
+            }
+        }      
+        if (state == CharacterState.Depositing)
+        {
+            if (type != CharacterType.Villager)
+            {
+                switch (type)
+                {
+                    case CharacterType.Lumberjack:
+                        UserResources.woodAmount += 15;
+                        break;
+                    case CharacterType.Gatherer:
+                        UserResources.berriesAmount += 15;
+                        break;
+                    case CharacterType.Miner:
+                        UserResources.rocksAmount += 15;
+                        break;
+                    case CharacterType.GemMiner:
+                        UserResources.gemsAmount += 15;
+                        break;
+                }
+            }
+            if (type == CharacterType.Villager)
+            {
+                switch (myDesiredResource)
+                {
+                    case DesiredResource.Berries:
+                        myHouse.GetComponent<HouseInventory>().berriesAmount += 5;
+                        break;
+                    case DesiredResource.Wood:
+                        myHouse.GetComponent<HouseInventory>().woodAmount += 5;
+                        break;
+                    case DesiredResource.Rocks:
+                        myHouse.GetComponent<HouseInventory>().rocksAmount += 5;
+                        break;
+                    case DesiredResource.Gems:
+
+                        myHouse.GetComponent<HouseInventory>().gemsAmount += 5;
+                        break;
+                }
+            }
+        } 
+    }
+
+    //Majority of AI Logic is held inside the update function to check for different circumstances e.g have 'I' reached my resource yet?
+    //A 3 second delay is applied to the gathering and depositing states so the user can see clearly when the character is performing the respective tasks
     void Update()
     {
         if (myType != CharacterType.Citizen)
@@ -107,6 +196,7 @@ public class Character : MonoBehaviour
                     }
                 }
             }
+
             if (pathFound == true)
             {
                 if (myState == CharacterState.Gathering)
@@ -114,12 +204,15 @@ public class Character : MonoBehaviour
                     if (timer < delay)
                     {
                         timer += Time.deltaTime;
+                        resourcesUpdated = false;
                     }
                     else if (timer >= delay)
                     {
                         if (myType != CharacterType.Villager)
                         {
                             pathFound = false;
+
+                            //Finds new path once resources have been gathered
 
                             if (myType != CharacterType.GemMiner)
                             {
@@ -128,42 +221,9 @@ public class Character : MonoBehaviour
                             else
                             {
                                 pathToHome = pathfinder.FindPath(myDesiredCellType, startingCell, false, this, true);
-                            }
-
-
-                            switch (myType)
-                            {
-                                case CharacterType.Lumberjack:
-                                    myCell.resourceAmount -= 15;
-                                    break;
-                                case CharacterType.Gatherer:
-                                    myCell.resourceAmount -= 15;
-                                    break;
-                                case CharacterType.Miner:
-                                    myCell.resourceAmount -= 15;
-                                    break;
-                                case CharacterType.GemMiner:
-                                    myCell.resourceAmount -= 15;
-                                    break;
-                            }
-                            if (myType == CharacterType.Villager)
-                            {
-                                switch (myDesiredResource)
-                                {
-                                    case DesiredResource.Berries:
-                                        UserResources.berriesAmount -= 5;
-                                        break;
-                                    case DesiredResource.Wood:
-                                        UserResources.woodAmount -= 5;
-                                        break;
-                                    case DesiredResource.Rocks:
-                                        UserResources.rocksAmount -= 5;
-                                        break;
-                                    case DesiredResource.Gems:
-                                        UserResources.gemsAmount -= 5;
-                                        break;
-                                }
-                            }
+                            }       
+                            
+                            //Destroys object to deplete resource after it has been gathered                
                             
                             if (myCell.resourceAmount <= 0)
                             {
@@ -179,10 +239,18 @@ public class Character : MonoBehaviour
 
                             }
                         }
+                        if (resourcesUpdated == false)
+                        {
+                            UpdateResources(myState, myType);
+                            resourcesUpdated = true;
+                        }
+                        
 
                         myState = CharacterState.Walking;
                         currentPath = pathToHome;
                         i = 0;
+
+                        //After the gathering has completed, start moving back towards home and enter walking state
 
                         if (transform.position == currentPath[i + 1].position && myState != CharacterState.Gathering && myState != CharacterState.Depositing)
                         {
@@ -190,17 +258,15 @@ public class Character : MonoBehaviour
                             myCell = currentPath[i];
                             timer = 0.0f;
                         }
-
                         transform.position = Vector3.MoveTowards(transform.position, currentPath[i + 1].position, 5.0f * Time.deltaTime);
-
                     }
                 }
-
                 if (myState == CharacterState.Depositing)
                 {
                     if (timer < delay)
                     {
                         timer += Time.deltaTime;
+                        resourcesUpdated = false;
                     }
                     else if (timer >= delay)
                     {
@@ -218,60 +284,29 @@ public class Character : MonoBehaviour
                             }
                             
                         }
+                        if (resourcesUpdated == false)
+                        {
+                            UpdateResources(myState, myType);
+                            resourcesUpdated = true;
+                        }
+                        
                         myState = CharacterState.Walking;
                         currentPath = pathToResource;
                         i = 0;
+
+                        //After depositing has completed, start moving back towards the resource and enter walking state
 
                         if (transform.position == currentPath[i + 1].position && myState != CharacterState.Gathering && myState != CharacterState.Depositing)
                         {
                             i++;
                             myCell = currentPath[i];
                             timer = 0.0f;
-                            if (myType == CharacterType.Villager)
-                            {
-                                switch (myDesiredResource)
-                                {
-                                    case DesiredResource.Berries:
-                                        myHouse.GetComponent<HouseInventory>().berriesAmount += 5;
-                                        break;
-                                    case DesiredResource.Wood:
-                                        myHouse.GetComponent<HouseInventory>().woodAmount += 5;
-                                        break;
-                                    case DesiredResource.Rocks:
-                                        myHouse.GetComponent<HouseInventory>().rocksAmount += 5;
-                                        break;
-                                    case DesiredResource.Gems:
-
-                                        myHouse.GetComponent<HouseInventory>().gemsAmount += 5;
-                                        break;
-
-                                }
-                            }
-                            else
-                            {
-                                switch (myType)
-                                {
-                                    case CharacterType.Lumberjack:
-                                        UserResources.woodAmount += 15;
-                                        break;
-                                    case CharacterType.Gatherer:
-                                        UserResources.berriesAmount += 15;
-                                        break;
-                                    case CharacterType.Miner:
-                                        UserResources.rocksAmount += 15;
-                                        break;
-                                    case CharacterType.GemMiner:
-                                        UserResources.gemsAmount += 15;
-                                        break;
-                                }
-                            }
-                        }
-
+                            
+                        }                     
                         transform.position = Vector3.MoveTowards(transform.position, currentPath[i + 1].position, 5.0f * Time.deltaTime);
-
                     }
                 }
-
+                //While walking the character moves to the next cell in the current path with the Vector3.MoveTowards function
                 if (myState == CharacterState.Walking)
                 {
                     if (myCell == pathToResource[pathToResource.Count - 1])
@@ -294,7 +329,5 @@ public class Character : MonoBehaviour
                 }
             }
         }
-
-
     }
 }

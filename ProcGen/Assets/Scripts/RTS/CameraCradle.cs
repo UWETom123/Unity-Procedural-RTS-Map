@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//Simple script for navigating the camera
+
+using UnityEngine;
 using System.Collections;
 
 public class CameraCradle : MonoBehaviour {

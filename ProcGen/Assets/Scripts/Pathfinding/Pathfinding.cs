@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
+//A* Pathfinding related functions held inside the Pathfinding class
+//Used mostly by the Character class to find the closest resource and then navigate to it
+
 public class Pathfinding : MonoBehaviour {
 
     public GenerateGrid generateGrid;
@@ -21,6 +24,8 @@ public class Pathfinding : MonoBehaviour {
         GridCell closestCell = GenerateGrid.mapGrid[0,0];
 
         List<float> distances = new List<float>();
+
+        //Searches all cells in the map grid and then returns the closest one depending on what type of cell is desired
 
         foreach (GridCell cell in GenerateGrid.mapGrid)
         {
@@ -46,6 +51,8 @@ public class Pathfinding : MonoBehaviour {
         return closestCell;
     }
 
+    //Standard A* to find the path from the current cell 'workerCell' to the desired resource 'cellType'
+    //If a gem miner is attempting to find a path, additonal rules take place
     public List<GridCell> FindPath (GridCell.CellType cellType, GridCell workerCell, bool reverseList, Character character, bool gemMiner = false)
     {
         GridCell startingCell = workerCell;
@@ -119,7 +126,7 @@ public class Pathfinding : MonoBehaviour {
         character.pathFound = false;
         return null;
     }
-
+    //After the path is found, it is then retraced and reversed
     List<GridCell> RetracePath(GridCell startCell, GridCell endCell, bool reverseList)
     {
         List<GridCell> path = new List<GridCell>();
@@ -137,7 +144,7 @@ public class Pathfinding : MonoBehaviour {
         
         return path;
     }
-
+    //Used to check distance between two cells
     int GetDistance(GridCell cellA, GridCell cellB)
     {
         int dstX = Mathf.Abs(cellA.gridX - cellB.gridX);
@@ -149,7 +156,7 @@ public class Pathfinding : MonoBehaviour {
         }
         return 14 * dstX + 10 * (dstY - dstX);
     }
-
+    //Debug mode made to check paths visually through the use of Debug.DrawLine()
     public void DrawPathLines(List<GridCell> path)
     {
         Vector3 drawTarget;

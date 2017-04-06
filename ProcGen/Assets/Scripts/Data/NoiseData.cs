@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿//Object for holding all noise related information
+//Receives input from UI before applying values to noise class
+
+using UnityEngine;
 using System.Collections;
 
 [CreateAssetMenu()]

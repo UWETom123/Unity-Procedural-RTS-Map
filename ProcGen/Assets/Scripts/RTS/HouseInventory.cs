@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿//Script used to hold information about each house and the resources that it holds
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;

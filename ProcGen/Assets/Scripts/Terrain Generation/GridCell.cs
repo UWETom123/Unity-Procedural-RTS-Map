@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿//Class responsible for holding information about each cell
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 

@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿//Class responsible for distributing resource prefabs around the grid 
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 

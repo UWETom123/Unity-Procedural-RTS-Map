@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//The class responsible for generating the perlin noise map
+
+using UnityEngine;
 using System.Collections;
 
 public static class Noise {
