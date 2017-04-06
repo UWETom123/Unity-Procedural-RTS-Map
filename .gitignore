@@ -43,3 +43,5 @@ sysinfo.txt
 /ProcGen/Assembly-CSharp-Editor.csproj
 /ProcGen/Assembly-CSharp-Editor-firstpass.csproj
 /ProcGen/Assembly-CSharp-firstpass.csproj
+/ProcGen/Assets/Scenes/*.DS_Store
+/ProcGen/Assets/*.DS_Store
