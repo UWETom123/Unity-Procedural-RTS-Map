@@ -29,3 +29,17 @@ sysinfo.txt
 *.apk
 *.unitypackage
 /ProcGen/Library
+/ProcGen/ProcGen.csproj
+/ProcGen/ProcGen.Editor.csproj
+/ProcGen/ProcGen.Editor.Plugins.csproj
+/ProcGen/ProcGen.Plugins.csproj
+/ProcGen/ProcGen.sln
+/ProcGen/ProcGen.userprefs
+/ProcGen/.vs
+/ProcGen/obj
+/ProcGen/._.DS_Store
+/ProcGen/.DS_Store
+/ProcGen/Assembly-CSharp.csproj
+/ProcGen/Assembly-CSharp-Editor.csproj
+/ProcGen/Assembly-CSharp-Editor-firstpass.csproj
+/ProcGen/Assembly-CSharp-firstpass.csproj
