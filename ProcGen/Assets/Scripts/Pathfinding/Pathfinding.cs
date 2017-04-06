@@ -9,6 +9,13 @@ public class Pathfinding : MonoBehaviour {
 
     public bool pathFound;
 
+    UserResources userResources;
+
+    void Start()
+    {
+        userResources = GameObject.Find("RTSManager").GetComponent<UserResources>();
+    }
+
     GridCell FindClosestCell(GridCell.CellType cellType, GridCell workerCell)
     {
         GridCell closestCell = GenerateGrid.mapGrid[0,0];
@@ -39,7 +46,7 @@ public class Pathfinding : MonoBehaviour {
         return closestCell;
     }
 
-    public List<GridCell> FindPath (GridCell.CellType cellType, GridCell workerCell, bool reverseList, Character character, UserResources userResources = null, bool gemMiner = false)
+    public List<GridCell> FindPath (GridCell.CellType cellType, GridCell workerCell, bool reverseList, Character character, bool gemMiner = false)
     {
         GridCell startingCell = workerCell;
         GridCell targetCell = FindClosestCell(cellType, workerCell);
@@ -79,23 +86,12 @@ public class Pathfinding : MonoBehaviour {
                             continue;
                         }
                     }
-                    else if (userResources.addedBoats == true && userResources.addedLadders == false)
+                    else if (userResources.addedBoats == true)
                     {
                         if (closedSet.Contains(neighbour))
                         {
                             continue;
                         }
-                    }
-                    else if (userResources.addedBoats == true && userResources.addedLadders == true)
-                    {
-                        if (closedSet.Contains(neighbour))
-                        {
-                            continue;
-                        }
-                    }
-                    else if (userResources.addedBoats == false && userResources.addedLadders == false)
-                    {
-                        continue;
                     }
                 }
                 else
@@ -120,6 +116,7 @@ public class Pathfinding : MonoBehaviour {
                 }
             }
         }
+        character.pathFound = false;
         return null;
     }
 

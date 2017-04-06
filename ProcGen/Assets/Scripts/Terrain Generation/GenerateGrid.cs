@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+//Good seeds:
+//99839
+//123
 public class GenerateGrid : MonoBehaviour {
 
     public static GridCell[,] mapGrid = new GridCell[300,300]; 
@@ -95,7 +97,7 @@ public class GenerateGrid : MonoBehaviour {
             }
             else if (hit.collider.tag.Equals ("Island") && cell.position.y < 10)
             {
-                cell.myCell = GridCell.CellType.Grass;
+                cell.myCell = GridCell.CellType.ElevatedLand;
             }
             else
             {
@@ -105,7 +107,7 @@ public class GenerateGrid : MonoBehaviour {
         gridGenerated = true;
     }
 
-    public void GenerateVillagers(int villagerAmount)
+    public void GenerateVillagers(int villagerAmount, System.Random myPrng)
     {
         int currentSpawnedVillagers;
         int counter = 0;
@@ -135,8 +137,8 @@ public class GenerateGrid : MonoBehaviour {
                         {
                             break;
                         }
-                        gridX = FindNearX(cell.gridX);
-                        gridY = FindNearY(cell.gridY);
+                        gridX = FindNearX(cell.gridX, myPrng);
+                        gridY = FindNearY(cell.gridY, myPrng);
 
                     } while (mapGrid[gridX, gridY].myCell != GridCell.CellType.Grass);
 
@@ -177,7 +179,7 @@ public class GenerateGrid : MonoBehaviour {
         }      
     }
 
-    public void GenerateHouseLocations(int numberOfHousesToSpawn)
+    public void GenerateHouseLocations(int numberOfHousesToSpawn, System.Random myPrng)
     {
         int gridX;
         int gridY; 
@@ -213,13 +215,13 @@ public class GenerateGrid : MonoBehaviour {
                     break;
                 }
 
-                gridX = Random.Range(0, mapGrid.GetLength(0));
-                gridY = Random.Range(0, mapGrid.GetLength(1));
+                gridX = myPrng.Next(0, mapGrid.GetLength(0));
+                gridY = myPrng.Next(0, mapGrid.GetLength(1));
 
                 while (mapGrid[gridX, gridY].myCell != GridCell.CellType.Grass)
                 {
-                    gridX = Random.Range(0, mapGrid.GetLength(0));
-                    gridY = Random.Range(0, mapGrid.GetLength(1));
+                    gridX = myPrng.Next(0, mapGrid.GetLength(0));
+                    gridY = myPrng.Next(0, mapGrid.GetLength(1));
                 }
 
                 for (int y = gridY - 8; y != gridY + 8; y++)
@@ -248,9 +250,9 @@ public class GenerateGrid : MonoBehaviour {
 
                     bool villagerAreaGenerated = false;
 
-                    for (int y = gridY - 4; y != gridY + 4; y++)
+                    for (int y = gridY - 8; y != gridY + 8; y++)
                     {
-                        for (int x = gridX - 4; x != gridX + 4; x++)
+                        for (int x = gridX - 8; x != gridX + 8; x++)
                         {
                             if (villagerAreaGenerated == false)
                             {
@@ -277,7 +279,7 @@ public class GenerateGrid : MonoBehaviour {
         }
     }
 
-    public void ChooseStartingLocation()
+    public void ChooseStartingLocation(System.Random myPrng)
     {
         int gridX;
         int gridY;
@@ -300,13 +302,13 @@ public class GenerateGrid : MonoBehaviour {
                 break;
             }
 
-            gridX = Random.Range(0, mapGrid.GetLength(0));
-            gridY = Random.Range(0, mapGrid.GetLength(1));
+            gridX = myPrng.Next(0, mapGrid.GetLength(0));
+            gridY = myPrng.Next(0, mapGrid.GetLength(1));
 
             while (mapGrid[gridX, gridY].myCell != GridCell.CellType.Grass)
             {
-                gridX = Random.Range(0, mapGrid.GetLength(0));
-                gridY = Random.Range(0, mapGrid.GetLength(1));
+                gridX = myPrng.Next(0, mapGrid.GetLength(0));
+                gridY = myPrng.Next(0, mapGrid.GetLength(1));
             }
           
             for (int y = gridY - 12; y != gridY + 12; y++)
@@ -332,22 +334,22 @@ public class GenerateGrid : MonoBehaviour {
             {
                 startingAreaGenerated = true;
 
-                for (int y = gridY - 12; y != gridY + 24; y++)
+                for (int y = gridY - 25; y != gridY + 25; y++)
                 {
-                    for (int x = gridX - 12; x != gridX + 24; x++)
+                    for (int x = gridX - 25; x != gridX + 25; x++)
                     {
                         mapGrid[x, y].myCell = GridCell.CellType.StartingCell;
                         
                     }
                 }
-                Instantiate((Object)startingBuilding, mapGrid[gridX, gridY].position, Quaternion.identity);
+                Instantiate((Object)startingBuilding, mapGrid[gridX, gridY - 15].position, Quaternion.identity);
                 
                 //mainCamera.transform.position = new Vector3(mapGrid[gridX, gridY].position.x - 28, mapGrid[gridX, gridY].position.y + 28, mapGrid[gridX, gridY].position.z + 44);
             }
         }
     }
 
-    public void GetRandomSelection(int cellAmount, int resourcePodCount, bool rareResource)
+    public void GetRandomSelection(int cellAmount, int resourcePodCount, bool rareResource, System.Random myPrng)
     {
         spreadAmount = cellAmount;
         int startingCells;
@@ -372,13 +374,13 @@ public class GenerateGrid : MonoBehaviour {
             startingCells = 15;
         }
 
-        gridX = Random.Range(0, mapGrid.GetLength(0));
-        gridY = Random.Range(0, mapGrid.GetLength(1));
+        gridX = myPrng.Next(0, mapGrid.GetLength(0));
+        gridY = myPrng.Next(0, mapGrid.GetLength(1));
 
         while (mapGrid[gridX, gridY].myCell != targetArea)
         {
-            gridX = Random.Range(0, mapGrid.GetLength(0));
-            gridY = Random.Range(0, mapGrid.GetLength(1));
+            gridX = myPrng.Next(0, mapGrid.GetLength(0));
+            gridY = myPrng.Next(0, mapGrid.GetLength(1));
         }
         if (rareResource == true)
         {
@@ -395,14 +397,14 @@ public class GenerateGrid : MonoBehaviour {
         while (currentStartingCells < startingCells)
         {
             counter2++;
-            newX = FindNearX(gridX);
-            newY = FindNearY(gridY);
+            newX = FindNearX(gridX, myPrng);
+            newY = FindNearY(gridY, myPrng);
 
             while (gridX == newX && gridY == newY)
             {
                 
-                newX = FindNearX(gridX);
-                newY = FindNearY(gridY);
+                newX = FindNearX(gridX, myPrng);
+                newY = FindNearY(gridY, myPrng);
                 
                 counter++;
 
@@ -415,8 +417,8 @@ public class GenerateGrid : MonoBehaviour {
 
             while (mapGrid[newX, newY].myCell != targetArea)
             {
-                newX = FindNearX(gridX);
-                newY = FindNearY(gridY);
+                newX = FindNearX(gridX, myPrng);
+                newY = FindNearY(gridY, myPrng);
                 counter1++;
                 if (counter1 == 100)
                 {
@@ -430,12 +432,12 @@ public class GenerateGrid : MonoBehaviour {
                 if (rareResource == true)
                 {
                     mapGrid[newX, newY].myCell = GridCell.CellType.RareResourceStartingPoint;
-                    GenerateResourceCells(newX, newY, true);
+                    GenerateResourceCells(newX, newY, true, myPrng);
                 }
                 else
                 {
                     mapGrid[newX, newY].myCell = GridCell.CellType.ResourceStartingPoint;
-                    GenerateResourceCells(newX, newY, false);
+                    GenerateResourceCells(newX, newY, false, myPrng);
                 }                              
                 currentStartingCells++;
             }
@@ -450,20 +452,20 @@ public class GenerateGrid : MonoBehaviour {
 
     }
 
-    public void spawnStartingWorkers(int amountOfWorkers)
+    public void spawnStartingWorkers(int amountOfWorkers, System.Random myPrng)
     {
         int gridX;
         int gridY;
 
         for (int i = 0; i != amountOfWorkers; i++)
         {
-            gridX = Random.Range(0, mapGrid.GetLength(0));
-            gridY = Random.Range(0, mapGrid.GetLength(1));
+            gridX = myPrng.Next(0, mapGrid.GetLength(0));
+            gridY = myPrng.Next(0, mapGrid.GetLength(1));
 
             while (mapGrid[gridX, gridY].myCell != GridCell.CellType.StartingCell || mapGrid[gridX, gridY].occupiedCell == true)
             {
-                gridX = Random.Range(0, mapGrid.GetLength(0));
-                gridY = Random.Range(0, mapGrid.GetLength(1));
+                gridX = myPrng.Next(0, mapGrid.GetLength(0));
+                gridY = myPrng.Next(0, mapGrid.GetLength(1));
             }
 
             lumberjacks.Add(Instantiate(worker, mapGrid[gridX, gridY].position, Quaternion.identity));
@@ -472,13 +474,13 @@ public class GenerateGrid : MonoBehaviour {
             lumberjacks[lumberjacks.Count -1].GetComponent<Character>().myCell = mapGrid[gridX, gridY];
             lumberjacks[lumberjacks.Count - 1].GetComponent<Character>().myDesiredCellType = GridCell.CellType.Wood;
 
-            gridX = Random.Range(0, mapGrid.GetLength(0));
-            gridY = Random.Range(0, mapGrid.GetLength(1));
+            gridX = myPrng.Next(0, mapGrid.GetLength(0));
+            gridY = myPrng.Next(0, mapGrid.GetLength(1));
 
             while (mapGrid[gridX, gridY].myCell != GridCell.CellType.StartingCell || mapGrid[gridX, gridY].occupiedCell == true)
             {
-                gridX = Random.Range(0, mapGrid.GetLength(0));
-                gridY = Random.Range(0, mapGrid.GetLength(1));
+                gridX = myPrng.Next(0, mapGrid.GetLength(0));
+                gridY = myPrng.Next(0, mapGrid.GetLength(1));
             }
 
             gatherers.Add(Instantiate(worker, mapGrid[gridX, gridY].position, Quaternion.identity));
@@ -487,13 +489,13 @@ public class GenerateGrid : MonoBehaviour {
             gatherers[gatherers.Count - 1].GetComponent<Character>().myCell = mapGrid[gridX, gridY];
             gatherers[gatherers.Count - 1].GetComponent<Character>().myDesiredCellType = GridCell.CellType.Berry;
 
-            gridX = Random.Range(0, mapGrid.GetLength(0));
-            gridY = Random.Range(0, mapGrid.GetLength(1));
+            gridX = myPrng.Next(0, mapGrid.GetLength(0));
+            gridY = myPrng.Next(0, mapGrid.GetLength(1));
 
             while (mapGrid[gridX, gridY].myCell != GridCell.CellType.StartingCell || mapGrid[gridX, gridY].occupiedCell == true)
             {
-                gridX = Random.Range(0, mapGrid.GetLength(0));
-                gridY = Random.Range(0, mapGrid.GetLength(1));
+                gridX = myPrng.Next(0, mapGrid.GetLength(0));
+                gridY = myPrng.Next(0, mapGrid.GetLength(1));
             }
 
             miners.Add(Instantiate(worker, mapGrid[gridX, gridY].position, Quaternion.identity));
@@ -504,8 +506,8 @@ public class GenerateGrid : MonoBehaviour {
 
             while (mapGrid[gridX, gridY].myCell != GridCell.CellType.StartingCell || mapGrid[gridX, gridY].occupiedCell == true)
             {
-                gridX = Random.Range(0, mapGrid.GetLength(0));
-                gridY = Random.Range(0, mapGrid.GetLength(1));
+                gridX = myPrng.Next(0, mapGrid.GetLength(0));
+                gridY = myPrng.Next(0, mapGrid.GetLength(1));
             }
 
             gemminers.Add(Instantiate(worker, mapGrid[gridX, gridY].position, Quaternion.identity));
@@ -554,7 +556,7 @@ public class GenerateGrid : MonoBehaviour {
         }
     }
 
-    public void GenerateResourceCells(int gridX, int gridY, bool rareResource)
+    public void GenerateResourceCells(int gridX, int gridY, bool rareResource, System.Random myPrng)
     {
         int counter = 0;
         int counter1 = 0;
@@ -575,15 +577,15 @@ public class GenerateGrid : MonoBehaviour {
         while (generatedCells < spreadAmount)
         {
             counter1++;
-            newX = FindNearX(gridX);
-            newY = FindNearY(gridY);
+            newX = FindNearX(gridX, myPrng);
+            newY = FindNearY(gridY, myPrng);
             
             while(mapGrid[newX, newY].occupiedCell == true)
             {
                 //Debug.Log(newX + " " + newY);
                 counter++;
-                newX = FindNearX(gridX);
-                newY = FindNearY(gridY);
+                newX = FindNearX(gridX, myPrng);
+                newY = FindNearY(gridY, myPrng);
                 if (counter == 100)
                 {                    
                     counter = 0;
@@ -613,10 +615,10 @@ public class GenerateGrid : MonoBehaviour {
         }
     }
 
-    public int FindNearX(int gridX)
+    public int FindNearX(int gridX, System.Random myPrng)
     {
         int x = gridX;
-        int randomChange = Random.Range(0, 6);
+        int randomChange = myPrng.Next(0, 6);
 
         switch (randomChange)
         {
@@ -653,10 +655,10 @@ public class GenerateGrid : MonoBehaviour {
         return x;
     }
 
-    public int FindNearY(int gridY)
+    public int FindNearY(int gridY, System.Random myPrng)
     {
         int y = gridY;
-        int randomChange = Random.Range(0, 6);
+        int randomChange = myPrng.Next(0, 6);
 
         switch (randomChange)
         {

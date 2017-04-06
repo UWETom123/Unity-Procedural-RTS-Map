@@ -47,11 +47,11 @@ public class UI : MonoBehaviour {
 
     void Start()
     {
-        textureData.layers[2].texture = grass;
         inventoryCanvas.GetComponent<Canvas>().enabled = false;
+        textureData.layers[2].texture = grass;
     }
 
-    public void GenerateMap () {
+    public void GenerateMap () {     
         if (userSeed.text == "")
         {
             seed = Random.Range(1, 100000);
@@ -113,6 +113,8 @@ public class UI : MonoBehaviour {
         gameObject.SetActive(false);
         inventoryCanvas.GetComponent<Canvas>().enabled = true;
 
+        System.Random prng = new System.Random(seed);
+
         float resourceAmount = Mathf.Round(25 * resourceDistributionMultiplier);
 
         if (resourceAmount == 0)
@@ -125,7 +127,7 @@ public class UI : MonoBehaviour {
         for (int i = 0; i < resourceAmount; i++)
         {
             GenerateGrid.podID++;
-            generateGrid.GetRandomSelection(2, 1, false);
+            generateGrid.GetRandomSelection(2, 1, false, prng);
         }
 
         resourceAmount = Mathf.Round(20 * resourceDistributionMultiplier);
@@ -133,16 +135,16 @@ public class UI : MonoBehaviour {
         for (int i = 0; i < resourceAmount; i++)
         {
             GenerateGrid.podID++;
-            generateGrid.GetRandomSelection(1, 1, true);
+            generateGrid.GetRandomSelection(1, 1, true, prng);
         }
-        generateGrid.ChooseStartingLocation();
-        generateGrid.GenerateHouseLocations(houseAmount);
-        generateGrid.GenerateVillagers(4);
-        instantiateModels.InstantiateResources(GenerateGrid.mapGrid);
-        generateGrid.spawnStartingWorkers(startingWorkers);
-        
+        generateGrid.ChooseStartingLocation(prng);
+        generateGrid.GenerateHouseLocations(houseAmount, prng);
+        generateGrid.GenerateVillagers(4, prng);
+        instantiateModels.InstantiateResources(GenerateGrid.mapGrid, prng);
+        generateGrid.spawnStartingWorkers(startingWorkers, prng);
+
         //generateGrid.DrawGridLines();
-        
-        
+
+
     }
 }

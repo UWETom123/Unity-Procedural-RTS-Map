@@ -23,15 +23,15 @@ public class InstantiateModels : MonoBehaviour {
     public static bool resourcesInstantiated;
 
 
-	public void InstantiateResources(GridCell[,] grid)
+	public void InstantiateResources(GridCell[,] grid, System.Random myPrng)
     {
         resourcesInstantiated = false;
         podCount = GenerateGrid.podID;
 
         while (currentPodsSpawned < podCount)
         {
-            targetResource = resources[Random.Range(0, 4)];
-            targetRareResource = rareResources[Random.Range(0, 2)];
+            targetResource = resources[myPrng.Next(0, 4)];
+            targetRareResource = rareResources[myPrng.Next(0, 2)];
 
             switch(targetResource.tag)
             {
